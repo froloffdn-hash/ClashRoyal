@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clash Royale Mini App</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Верхняя панель -->
+        <div class="top-bar">
+            <div class="resources">
+                <div class="resource gold">
+                    <i class="fas fa-coins"></i>
+                    <span id="gold">1000</span>
+                </div>
+                <div class="resource gems">
+                    <i class="fas fa-gem"></i>
+                    <span id="gems">50</span>
+                </div>
+                <div class="resource trophies">
+                    <i class="fas fa-trophy"></i>
+                    <span id="trophies">1500</span>
+                </div>
+                <div class="resource energy">
+                    <i class="fas fa-bolt"></i>
+                    <span id="energy">100/100</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Основной контент -->
+        <div class="main-content">
+            <!-- Главное меню -->
+            <div id="mainMenu" class="screen active">
+                <div class="player-info">
+                    <div class="avatar">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="player-details">
+                        <h2 id="playerName">Игрок</h2>
+                        <div class="level">Уровень <span id="playerLevel">1</span></div>
+                    </div>
+                </div>
+
+                <div class="menu-buttons">
+                    <button class="menu-btn battle-btn" onclick="showScreen('battle')">
+                        <i class="fas fa-swords"></i>
+                        <span>Битва</span>
+                    </button>
+                    <button class="menu-btn deck-btn" onclick="showScreen('deck')">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Колода</span>
+                    </button>
+                    <button class="menu-btn collection-btn" onclick="showScreen('collection')">
+                        <i class="fas fa-box-open"></i>
+                        <span>Коллекция</span>
+                    </button>
+                    <button class="menu-btn chest-btn" onclick="showScreen('chest')">
+                        <i class="fas fa-gift"></i>
+                        <span>Сундук</span>
+                    </button>
+                    <button class="menu-btn shop-btn" onclick="showScreen('shop')">
+                        <i class="fas fa-store"></i>
+                        <span>Магазин</span>
+                    </button>
+                    <button class="menu-btn arena-btn" onclick="showScreen('arena')">
+                        <i class="fas fa-flag"></i>
+                        <span>Арена</span>
+                    </button>
+                </div>
+
+                <div class="quick-stats">
+                    <div class="stat">
+                        <i class="fas fa-check"></i>
+                        <span id="wins">0</span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-times"></i>
+                        <span id="losses">0</span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-chart-line"></i>
+                        <span id="winrate">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Экран битвы -->
+            <div id="battle" class="screen">
+                <div class="screen-header">
+                    <button class="back-btn" onclick="showScreen('mainMenu')">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2>Битва</h2>
+                </div>
+
+                <div class="battle-options">
+                    <button class="battle-option quick-battle" onclick="startQuickBattle()">
+                        <i class="fas fa-bolt"></i>
+                        <h3>Быстрая битва</h3>
+                        <p>Сражайся с игроком твоего уровня</p>
+                        <div class="cost">⚡ 10 энергии</div>
+                    </button>
+
+                    <button class="battle-option tournament" onclick="startTournament()">
+                        <i class="fas fa-trophy"></i>
+                        <h3>Турнир</h3>
+                        <p>Соревнуйся за награды</p>
+                        <div class="cost">🏆 50 трофеев</div>
+                    </button>
+
+                    <button class="battle-option training" onclick="startTraining()">
+                        <i class="fas fa-robot"></i>
+                        <h3>Тренировка</h3>
+                        <p>Сражайся с ботами</p>
+                        <div class="cost">🆓 Бесплатно</div>
+                    </button>
+
+                    <button class="battle-option duel" onclick="showScreen('duel')">
+                        <i class="fas fa-user-friends"></i>
+                        <h3>Дуэль с другом</h3>
+                        <p>Пригласи друга на битву</p>
+                        <div class="cost">👥 1 на 1</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Экран битвы (в процессе) -->
+            <div id="battleScreen" class="screen">
+                <div class="battle-container">
+                    <div class="arena">
+                        <div class="opponent-side">
+                            <div class="player-info-small">
+                                <div class="avatar-small opponent">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <div class="name">Противник</div>
+                                <div class="trophies">🏆 1450</div>
+                            </div>
+                            <div class="opponent-cards">
+                                <!-- Карты противника будут здесь -->
+                            </div>
+                        </div>
+
+                        <div class="battle-field">
+                            <div class="tower enemy-tower">
+                                <div class="tower-health">1200</div>
+                            </div>
+                            <div class="units">
+                                <!-- Юниты в бою -->
+                            </div>
+                            <div class="tower player-tower">
+                                <div class="tower-health">1200</div>
+                            </div>
+                        </div>
+
+                        <div class="player-side">
+                            <div class="player-info-small">
+                                <div class="avatar-small player">
+                                    <i class="fas fa-crown"></i>
+                                </div>
+                                <div class="name" id="playerBattleName">Вы</div>
+                                <div class="trophies">🏆 <span id="playerBattleTrophies">1500</span></div>
+                            </div>
+                            
+                            <div class="elixir-bar">
+                                <div class="elixir-fill" id="elixirFill"></div>
+                                <div class="elixir-count" id="elixirCount">10</div>
+                            </div>
+
+                            <div class="player-hand" id="playerHand">
+                                <!-- Карты в руке -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Экран колоды -->
+            <div id="deck" class="screen">
+                <div class="screen-header">
+                    <button class="back-btn" onclick="showScreen('mainMenu')">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2>Моя колода</h2>
+                    <button class="edit-btn" onclick="toggleDeckEdit()">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </div>
+
+                <div class="deck-display" id="currentDeck">
+                    <!-- Карты колоды -->
+                </div>
+
+                <div class="collection-cards" id="collectionCards">
+                    <!-- Доступные карты -->
+                </div>
+
+                <div class="deck-actions">
+                    <button class="action-btn save-btn" onclick="saveDeck()" style="display: none;">
+                        <i class="fas fa-save"></i> Сохранить
+                    </button>
+                    <button class="action-btn upgrade-btn" onclick="showScreen('upgrade')">
+                        <i class="fas fa-arrow-up"></i> Улучшить
+                    </button>
+                </div>
+            </div>
+
+            <!-- Экран коллекции -->
+            <div id="collection" class="screen">
+                <div class="screen-header">
+                    <button class="back-btn" onclick="showScreen('mainMenu')">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2>Коллекция</h2>
+                    <div class="filters">
+                        <select id="rarityFilter" onchange="filterCards()">
+                            <option value="all">Все</option>
+                            <option value="common">Обычные</option>
+                            <option value="rare">Редкие</option>
+                            <option value="epic">Эпические</option>
+                            <option value="legendary">Легендарные</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="collection-grid" id="cardCollection">
+                    <!-- Все карты коллекции -->
+                </div>
+            </div>
+
+            <!-- Экран сундуков -->
+            <div id="chest" class="screen">
+                <div class="screen-header">
+                    <button class="back-btn" onclick="showScreen('mainMenu')">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2>Сундуки</h2>
+                    <div class="timer" id="chestTimer">
+                        <i class="fas fa-clock"></i>
+                        <span>00:00</span>
+                    </div>
+                </div>
+
+                <div class="chest-container">
+                    <div class="chest wooden" onclick="openChest('wooden')">
+                        <div class="chest-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <h3>Деревянный</h3>
+                        <p>3-5 карт</p>
+                        <div class="chest-cost">🆓 Бесплатно</div>
+                    </div>
+
+                    <div class="chest silver" onclick="openChest('silver')">
+                        <div class="chest-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <h3>Серебряный</h3>
+                        <p>5-8 карт</p>
+                        <div class="chest-cost">💰 100 золота</div>
+                    </div>
+
+                    <div class="chest golden" onclick="openChest('golden')">
+                        <div class="chest-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <h3>Золотой</h3>
+                        <p>8-12 карт</p>
+                        <div class="chest-cost">💎 10 самоцветов</div>
+                    </div>
+
+                    <div class="chest magical" onclick="openChest('magical')">
+                        <div class="chest-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <h3>Волшебный</h3>
+                        <p>10-15 карт</p>
+                        <div class="chest-cost">💎 50 самоцветов</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Экран открытия сундука -->
+            <div id="chestOpening" class="screen">
+                <div class="chest-opening">
+                    <div class="chest-large" id="openingChest">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <button class="open-btn" onclick="revealCards()">
+                        Открыть!
+                    </button>
+                    <div class="cards-reveal" id="cardsReveal">
+                        <!-- Карты из сундука -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Экран магазина -->
+            <div id="shop" class="screen">
+                <div class="screen-header">
+                    <button class="back-btn" onclick="showScreen('mainMenu')">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2>Магазин</h2>
+                </div>
+
+                <div class="shop-items">
+                    <div class="shop-item">
+                        <div class="item-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <h3>100 золота</h3>
+                        <p>Мгновенное пополнение</p>
+                        <button class="buy-btn" onclick="buyGold(100)">
+                            💎 10
+                        </button>
+                    </div>
+
+                    <div class="shop-item">
+                        <div class="item-icon">
+                            <i class="fas fa-gem"></i>
+                        </div>
+                        <h3>10 самоцветов</h3>
+                        <p>Премиум валюта</p>
+                        <button class="buy-btn" onclick="buyGems(10)">
+                            💰 1000
+                        </button>
+                    </div>
+
+                    <div class="shop-item">
+                        <div class="item-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3>Полная энергия</h3>
+                        <p>Восстановить до 100</p>
+                        <button class="buy-btn" onclick="refillEnergy()">
+                            💎 5
+                        </button>
+                    </div>
+
+                    <div class="shop-item">
+                        <div class="item-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <h3>Золотой сундук</h3>
+                        <p>8-12 карт</p>
+                        <button class="buy-btn" onclick="buyChest('golden')">
+                            💎 50
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Нижняя панель -->
+        <div class="bottom-nav">
+            <button class="nav-btn active" onclick="showScreen('mainMenu')">
+                <i class="fas fa-home"></i>
+                <span>Главная</span>
+            </button>
+            <button class="nav-btn" onclick="showScreen('battle')">
+                <i class="fas fa-swords"></i>
+                <span>Битва</span>
+            </button>
+            <button class="nav-btn" onclick="showScreen('deck')">
+                <i class="fas fa-layer-group"></i>
+                <span>Колода</span>
+            </button>
+            <button class="nav-btn" onclick="showScreen('chest')">
+                <i class="fas fa-gift"></i>
+                <span>Сундук</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Модальное окно уведомлений -->
+    <div id="notification" class="notification">
+        <div class="notification-content">
+            <span id="notificationText"></span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
